@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Dashboard | Manha E-Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --navy: #0D2137;
+            --teal: #0A7E8C;
+            --gold: #D4A017;
+            --cream: #F3F7FA;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--cream); }
+        .heading-font { font-family: 'Playfair Display', serif; }
+        .navy-bg { background-color: var(--navy); }
+        .gold-text { color: var(--gold); }
+        .gold-bg { background-color: var(--gold); }
+        .teal-text { color: var(--teal); }
+        .teal-bg { background-color: var(--teal); }
+        a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+            outline: 2px solid var(--teal);
+            outline-offset: 2px;
+        }
+        .status-pill { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px; display: inline-flex; align-items: center; gap: 6px; }
+        .modal-backdrop { background: rgba(13, 33, 55, 0.55); }
+        tbody tr:hover { background-color: #F9FBFC; }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- Top bar -->
+    <nav class="navy-bg text-white p-5 sticky top-0 z-40 shadow-xl">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-3">
+                <img src="logo.png" alt="Manha Logo" class="w-9 h-9 rounded-lg border border-amber-500/30">
+                <span class="text-lg font-bold tracking-tight uppercase">MANHA <span class="gold-text">E-SOLUTIONS</span></span>
+            </a>
+            <div class="flex items-center gap-6">
+                <a href="index.html" class="hidden sm:flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-amber-400 transition">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to site
+                </a>
+                <div class="flex items-center gap-2 text-sm font-semibold">
+                    <div class="w-8 h-8 rounded-full gold-bg text-slate-900 flex items-center justify-center font-bold">SR</div>
+                    <span class="hidden sm:inline">Shaik Abdul Rafi</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-6 py-10">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+            <div>
+                <span class="teal-text font-bold tracking-widest text-xs uppercase">Internal Tool</span>
+                <h1 class="heading-font text-4xl text-slate-900 mt-1">Client Dashboard</h1>
+                <p class="text-slate-500 mt-2 max-w-xl">Track every client's GST and ITR filing status, due dates, and fees in one place.</p>
+            </div>
+            <button id="add-client-btn" class="gold-bg text-slate-900 px-6 py-3 rounded-xl font-bold hover:bg-amber-500 transition shadow-lg shadow-amber-500/20 inline-flex items-center gap-2 self-start">
+                <i data-lucide="plus" class="w-5 h-5"></i> Add Client
+            </button>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Total Clients</span>
+                    <i data-lucide="users" class="w-4 h-4 text-slate-300"></i>
+                </div>
+                <h3 id="stat-total" class="text-3xl font-extrabold text-slate-900">0</h3>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Filed This Cycle</span>
+                    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+                </div>
+                <h3 id="stat-filed" class="text-3xl font-extrabold text-emerald-600">0</h3>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Pending / Overdue</span>
+                    <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400"></i>
+                </div>
+                <h3 id="stat-pending" class="text-3xl font-extrabold text-rose-500">0</h3>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">Fees Collected</span>
+                    <i data-lucide="indian-rupee" class="w-4 h-4 text-slate-300"></i>
+                </div>
+                <h3 id="stat-fees" class="text-3xl font-extrabold teal-text">₹0</h3>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mb-6 flex flex-col md:flex-row gap-4 md:items-center justify-between">
+            <div class="relative flex-1 max-w-md">
+                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                <input id="search-input" type="text" placeholder="Search by name, GST no, or type..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 outline-none focus:border-amber-500 text-sm">
+            </div>
+            <div class="flex gap-3">
+                <select id="filter-status" class="border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium outline-none focus:border-amber-500">
+                    <option value="all">All statuses</option>
+                    <option value="Filed">Filed</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Overdue">Overdue</option>
+                </select>
+                <select id="filter-type" class="border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium outline-none focus:border-amber-500">
+                    <option value="all">All types</option>
+                    <option value="Individual">Individual</option>
+                    <option value="Firm">Firm</option>
+                    <option value="School">School</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider text-left">
+                            <th class="px-6 py-4 font-bold">Client</th>
+                            <th class="px-6 py-4 font-bold">Type</th>
+                            <th class="px-6 py-4 font-bold">GST No.</th>
+                            <th class="px-6 py-4 font-bold">Status</th>
+                            <th class="px-6 py-4 font-bold">Next Due</th>
+                            <th class="px-6 py-4 font-bold text-right">Fee</th>
+                            <th class="px-6 py-4 font-bold text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="client-table-body" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+            <div id="empty-state" class="hidden flex-col items-center justify-center py-16 text-center">
+                <i data-lucide="inbox" class="w-10 h-10 text-slate-300 mb-3"></i>
+                <p class="text-slate-500 font-medium">No clients match your search.</p>
+                <p class="text-slate-400 text-sm">Try clearing the filters or add a new client.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add/Edit Client Modal -->
+    <div id="client-modal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg">
+            <form id="client-form">
+                <div class="navy-bg text-white px-8 py-6 rounded-t-3xl flex justify-between items-center">
+                    <h2 id="modal-title" class="text-xl font-bold heading-font">Add Client</h2>
+                    <button type="button" id="close-modal-btn" aria-label="Close"><i data-lucide="x" class="w-5 h-5"></i></button>
+                </div>
+                <div class="p-8 space-y-5">
+                    <input type="hidden" id="client-id">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Client Name</label>
+                        <input id="field-name" required type="text" placeholder="e.g. Sri Lakshmi Traders" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-amber-500">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Type</label>
+                            <select id="field-type" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-amber-500">
+                                <option value="Individual">Individual</option>
+                                <option value="Firm">Firm</option>
+                                <option value="School">School</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Status</label>
+                            <select id="field-status" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-amber-500">
+                                <option value="Filed">Filed</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Overdue">Overdue</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">GST No. (optional)</label>
+                        <input id="field-gst" type="text" placeholder="e.g. 37ABCDE1234F1Z5" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-amber-500">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Next Due Date</label>
+                            <input id="field-due" type="date" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Fee (₹)</label>
+                            <input id="field-fee" type="number" min="0" step="1" placeholder="5000" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-amber-500">
+                        </div>
+                    </div>
+                </div>
+                <div class="px-8 pb-8 flex gap-3">
+                    <button type="button" id="cancel-btn" class="flex-1 border border-slate-200 rounded-xl py-3 font-bold text-slate-600 hover:bg-slate-50 transition">Cancel</button>
+                    <button type="submit" class="flex-1 gold-bg rounded-xl py-3 font-bold text-slate-900 hover:bg-amber-500 transition">Save Client</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const STORAGE_KEY = 'manha_clients_v1';
+
+        const seedClients = [
+            { id: crypto.randomUUID(), name: 'Sri Lakshmi Traders', type: 'Firm', gst: '37ABCDE1234F1Z5', status: 'Filed', due: '2026-10-11', fee: 6000 },
+            { id: crypto.randomUUID(), name: 'Manha E-Techno School', type: 'School', gst: '37XYZAB5678K2Q1', status: 'Pending', due: '2026-09-20', fee: 25000 },
+            { id: crypto.randomUUID(), name: 'P. Venkata Ramana', type: 'Individual', gst: '', status: 'Filed', due: '2027-07-31', fee: 1500 },
+            { id: crypto.randomUUID(), name: 'Jaggayyapet Agro Stores', type: 'Firm', gst: '37LMNOP9988H1R3', status: 'Overdue', due: '2026-08-30', fee: 4500 },
+            { id: crypto.randomUUID(), name: 'K. Fathima Begum', type: 'Individual', gst: '', status: 'Pending', due: '2026-09-25', fee: 1200 },
+            { id: crypto.randomUUID(), name: 'Sai Constructions', type: 'Firm', gst: '37QRSTU4321L9M2', status: 'Filed', due: '2026-10-11', fee: 8000 },
+        ];
+
+        function loadClients() {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(seedClients));
+                return seedClients;
+            }
+            try {
+                return JSON.parse(raw);
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveClients(clients) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(clients));
+        }
+
+        let clients = loadClients();
+
+        const tableBody = document.getElementById('client-table-body');
+        const emptyState = document.getElementById('empty-state');
+        const searchInput = document.getElementById('search-input');
+        const filterStatus = document.getElementById('filter-status');
+        const filterType = document.getElementById('filter-type');
+
+        const statusStyles = {
+            Filed: 'bg-emerald-50 text-emerald-700',
+            Pending: 'bg-amber-50 text-amber-700',
+            Overdue: 'bg-rose-50 text-rose-700',
+        };
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '—';
+            const d = new Date(dateStr + 'T00:00:00');
+            if (isNaN(d)) return '—';
+            return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+
+        function formatFee(fee) {
+            const n = Number(fee) || 0;
+            return '₹' + n.toLocaleString('en-IN');
+        }
+
+        function renderStats(list) {
+            document.getElementById('stat-total').textContent = list.length;
+            document.getElementById('stat-filed').textContent = list.filter(c => c.status === 'Filed').length;
+            document.getElementById('stat-pending').textContent = list.filter(c => c.status === 'Pending' || c.status === 'Overdue').length;
+            const totalFees = list.reduce((sum, c) => sum + (Number(c.fee) || 0), 0);
+            document.getElementById('stat-fees').textContent = formatFee(totalFees);
+        }
+
+        function getFilteredClients() {
+            const q = searchInput.value.trim().toLowerCase();
+            const statusVal = filterStatus.value;
+            const typeVal = filterType.value;
+
+            return clients.filter(c => {
+                const matchesQuery = !q ||
+                    c.name.toLowerCase().includes(q) ||
+                    (c.gst || '').toLowerCase().includes(q) ||
+                    c.type.toLowerCase().includes(q);
+                const matchesStatus = statusVal === 'all' || c.status === statusVal;
+                const matchesType = typeVal === 'all' || c.type === typeVal;
+                return matchesQuery && matchesStatus && matchesType;
+            });
+        }
+
+        function render() {
+            const filtered = getFilteredClients();
+            renderStats(clients);
+
+            tableBody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+                lucide.createIcons();
+                return;
+            }
+            emptyState.classList.add('hidden');
+            emptyState.classList.remove('flex');
+
+            filtered
+                .slice()
+                .sort((a, b) => (a.due || '9999').localeCompare(b.due || '9999'))
+                .forEach(c => {
+                    const tr = document.createElement('tr');
+                    const pillClass = statusStyles[c.status] || 'bg-slate-100 text-slate-600';
+                    tr.innerHTML = `
+                        <td class="px-6 py-4 font-semibold text-slate-800">${escapeHtml(c.name)}</td>
+                        <td class="px-6 py-4 text-slate-500">${escapeHtml(c.type)}</td>
+                        <td class="px-6 py-4 text-slate-500 font-mono text-xs">${escapeHtml(c.gst) || '—'}</td>
+                        <td class="px-6 py-4"><span class="status-pill ${pillClass}">${escapeHtml(c.status)}</span></td>
+                        <td class="px-6 py-4 text-slate-500">${formatDate(c.due)}</td>
+                        <td class="px-6 py-4 text-right font-semibold text-slate-800">${formatFee(c.fee)}</td>
+                        <td class="px-6 py-4 text-right whitespace-nowrap">
+                            <button class="edit-btn text-slate-400 hover:text-teal-600 transition p-1" data-id="${c.id}" aria-label="Edit ${escapeHtml(c.name)}"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+                            <button class="delete-btn text-slate-400 hover:text-rose-500 transition p-1" data-id="${c.id}" aria-label="Delete ${escapeHtml(c.name)}"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+
+            lucide.createIcons();
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // Modal handling
+        const modal = document.getElementById('client-modal');
+        const form = document.getElementById('client-form');
+        const modalTitle = document.getElementById('modal-title');
+
+        function openModal(client) {
+            form.reset();
+            if (client) {
+                modalTitle.textContent = 'Edit Client';
+                document.getElementById('client-id').value = client.id;
+                document.getElementById('field-name').value = client.name;
+                document.getElementById('field-type').value = client.type;
+                document.getElementById('field-status').value = client.status;
+                document.getElementById('field-gst').value = client.gst || '';
+                document.getElementById('field-due').value = client.due || '';
+                document.getElementById('field-fee').value = client.fee || '';
+            } else {
+                modalTitle.textContent = 'Add Client';
+                document.getElementById('client-id').value = '';
+            }
+            modal.classList.remove('hidden');
+            document.getElementById('field-name').focus();
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+        }
+
+        document.getElementById('add-client-btn').addEventListener('click', () => openModal(null));
+        document.getElementById('close-modal-btn').addEventListener('click', closeModal);
+        document.getElementById('cancel-btn').addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('client-id').value;
+            const data = {
+                name: document.getElementById('field-name').value.trim(),
+                type: document.getElementById('field-type').value,
+                status: document.getElementById('field-status').value,
+                gst: document.getElementById('field-gst').value.trim(),
+                due: document.getElementById('field-due').value,
+                fee: document.getElementById('field-fee').value,
+            };
+            if (!data.name) return;
+
+            if (id) {
+                clients = clients.map(c => c.id === id ? { ...c, ...data } : c);
+            } else {
+                clients.push({ id: crypto.randomUUID(), ...data });
+            }
+            saveClients(clients);
+            closeModal();
+            render();
+        });
+
+        tableBody.addEventListener('click', (e) => {
+            const editBtn = e.target.closest('.edit-btn');
+            const deleteBtn = e.target.closest('.delete-btn');
+            if (editBtn) {
+                const client = clients.find(c => c.id === editBtn.dataset.id);
+                if (client) openModal(client);
+            }
+            if (deleteBtn) {
+                const client = clients.find(c => c.id === deleteBtn.dataset.id);
+                if (client && confirm(`Remove ${client.name} from the client list?`)) {
+                    clients = clients.filter(c => c.id !== deleteBtn.dataset.id);
+                    saveClients(clients);
+                    render();
+                }
+            }
+        });
+
+        searchInput.addEventListener('input', render);
+        filterStatus.addEventListener('change', render);
+        filterType.addEventListener('change', render);
+
+        render();
+    </script>
+</body>
+</html>
