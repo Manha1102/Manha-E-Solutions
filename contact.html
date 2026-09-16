@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Manha E-Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<header id="siteHeader">
+  <nav class="wrap">
+    <a href="index.html" class="brand">
+      <svg viewBox="0 0 40 40" fill="none">
+        <rect width="40" height="40" rx="10" fill="#0e2436"/>
+        <path d="M9 29V11.5L20 22.5L31 11.5V29" stroke="#cd9f34" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="brand-name">Manha <span>E-Solutions</span></span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="services.html">Services</a>
+      <a href="software.html">Software</a>
+      <a href="about.html">About</a>
+      <a href="login.html">Client Login</a>
+      <a href="contact.html" class="nav-cta">Enquire</a>
+    </div>
+    <button class="nav-toggle" id="navToggle">Menu</button>
+  </nav>
+</header>
+
+<section class="page-header">
+  <div class="hero-grid"></div>
+  <div class="wrap">
+    <div class="kicker"><span class="line"></span> Get in touch</div>
+    <h1>Let's sort out your paperwork.</h1>
+    <p>Whether it's a GST filing due this month or a system you've been meaning to build, get in touch and we'll take it from there.</p>
+  </div>
+</section>
+
+<section class="dark-section">
+  <div class="wrap contact-inner">
+    <div>
+      <ul class="contact-list">
+        <li><span class="k">Phone</span><span class="v">+91 00000 00000</span></li>
+        <li><span class="k">Email</span><span class="v">hello@manhaesolutions.in</span></li>
+        <li><span class="k">Office</span><span class="v">Jaggayyapet, NTR District, Andhra Pradesh</span></li>
+      </ul>
+    </div>
+    <form class="contact-card" onsubmit="event.preventDefault(); this.querySelector('.btn').textContent='Sent — we\'ll reply soon';">
+      <div class="field">
+        <label>Name</label>
+        <input type="text" required>
+      </div>
+      <div class="field">
+        <label>Phone or email</label>
+        <input type="text" required>
+      </div>
+      <div class="field">
+        <label>What do you need?</label>
+        <textarea rows="3" placeholder="GST filing, a new system, etc."></textarea>
+      </div>
+      <button type="submit" class="btn">Send enquiry</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Manha E-Solutions, Jaggayyapet</span>
+    <span><a href="index.html">Home</a> &nbsp;·&nbsp; <a href="services.html">Services</a> &nbsp;·&nbsp; <a href="software.html">Software</a></span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
